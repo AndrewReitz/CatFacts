@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingBottom="10dip"
+        android:stretchColumns="1" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/login_label"
+                android:layout_height="wrap_content"
+                android:text="@string/Name" />
+
+            <EditText
+                android:id="@+id/main_edit_text_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:lines="1"
+                android:textColor="#ffffff" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/password_label"
+                android:layout_height="wrap_content"
+                android:text="@string/Phone" />
+
+            <EditText
+                android:id="@+id/main_edit_text_phone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:lines="1"
+                android:textColor="#ffffff" />
+
+        </TableRow>
+
+        <TableRow>
+            <ImageButton
+                android:id="@+id/main_button_find_contact"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/main_button_find_contact"
+                android:src="@drawable/ic_menu_contacts" />
+
+            <Button
+                android:id="@+id/main_button_add_contact"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/main_button_add_contact" />
+        </TableRow>
+    </TableLayout>
+
+    <ListView
+        android:id="@+id/main_listview_subscribed_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+    </ListView>
+
+</LinearLayout>
