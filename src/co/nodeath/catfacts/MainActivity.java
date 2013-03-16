@@ -15,7 +15,11 @@
 
 package co.nodeath.catfacts;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import org.holoeverywhere.app.Activity;
+import org.holoeverywhere.widget.Button;
+import org.holoeverywhere.widget.EditText;
+import org.holoeverywhere.widget.TextView;
+import org.holoeverywhere.widget.Toast;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,17 +33,13 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends SherlockActivity {
+public class MainActivity extends Activity {
 
     private static final int PICK_CONTACT = 0;
 

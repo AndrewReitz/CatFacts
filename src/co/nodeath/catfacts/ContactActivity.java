@@ -15,8 +15,11 @@
 
 package co.nodeath.catfacts;
 
-import com.WazaBe.HoloEverywhere.app.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
+import org.holoeverywhere.app.Activity;
+import org.holoeverywhere.widget.Button;
+import org.holoeverywhere.widget.CheckBox;
+import org.holoeverywhere.widget.TextView;
+import org.holoeverywhere.widget.Toast;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,16 +27,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.Random;
 
-public class ContactActivity extends SherlockActivity {
+public class ContactActivity extends Activity {
 
     private static final String ALPHABET
             = "1234567890qwertyuiop[]asdfghjkl;'zxcvbnm,./?><MNBVCXZ:LKJHGFDSA}{POIUYTREWQ+_)(*&^%$#@!~)";

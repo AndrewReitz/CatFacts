@@ -15,8 +15,8 @@
 
 package co.nodeath.catfacts;
 
-import com.WazaBe.HoloEverywhere.app.Activity;
-import com.WazaBe.HoloEverywhere.app.Toast;
+import org.holoeverywhere.app.Activity;
+import org.holoeverywhere.widget.Toast;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
