@@ -1,7 +1,22 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package co.nodeath.catfacts;
 
-import java.util.Calendar;
-import java.util.Random;
+import com.WazaBe.HoloEverywhere.app.Toast;
+import com.actionbarsherlock.app.SherlockActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,156 +30,161 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.WazaBe.HoloEverywhere.app.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
+import java.util.Calendar;
+import java.util.Random;
 
 public class ContactActivity extends SherlockActivity {
-	private static final String ALPHABET = "1234567890qwertyuiop[]asdfghjkl;'zxcvbnm,./?><MNBVCXZ:LKJHGFDSA}{POIUYTREWQ+_)(*&^%$#@!~)";
-	private static final String SHARED_PREFS_CHECKBOX_VIEWSMS = "checkboxviewsms";
-	private Random mRandom;
-	private String[] mCatFacts;
 
-	private Context mContext;
-	private Button mButtonRemove;
-	private Button mButtonCatFact;
-	private Button mButtonWelcome;
-	private Button mButtonNotRecognized;
-	private Button mButtonUnsubscribe;
-	private TextView mTextViewName;
-	private TextView mTextViewPhone;
-	private TextView mTextViewExplanation;
-	private CheckBox mCheckBoxViewSMS;
-	// private CheckBox mCheckBoxAutoRespond;
-	private String mName;
-	private String mPhone;
-	private SmsSender mSmsSender;
+    private static final String ALPHABET
+            = "1234567890qwertyuiop[]asdfghjkl;'zxcvbnm,./?><MNBVCXZ:LKJHGFDSA}{POIUYTREWQ+_)(*&^%$#@!~)";
+    private static final String SHARED_PREFS_CHECKBOX_VIEWSMS = "checkboxviewsms";
+    private Random mRandom;
+    private String[] mCatFacts;
 
-	// Button Click Events
-	OnClickListener mButtonRemoveClickEvent = new OnClickListener() {
-		public void onClick(View v) {
-			CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(mContext);
-			sqlHelper.removePerson(mName);
-			finish();
-		}
-	};
+    private Context mContext;
+    private Button mButtonRemove;
+    private Button mButtonCatFact;
+    private Button mButtonWelcome;
+    private Button mButtonNotRecognized;
+    private Button mButtonUnsubscribe;
+    private TextView mTextViewName;
+    private TextView mTextViewPhone;
+    private TextView mTextViewExplanation;
+    private CheckBox mCheckBoxViewSMS;
+    // private CheckBox mCheckBoxAutoRespond;
+    private String mName;
+    private String mPhone;
+    private SmsSender mSmsSender;
 
-	OnClickListener mButtonWelcomeClickEvent = new OnClickListener() {
-		public void onClick(View v) {
-			messageHandler(mPhone, getString(R.string.welcome_message));
-		}
-	};
+    // Button Click Events
+    OnClickListener mButtonRemoveClickEvent = new OnClickListener() {
+        public void onClick(View v) {
+            CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(mContext);
+            sqlHelper.removePerson(mName);
+            finish();
+        }
+    };
 
-	OnClickListener mButtonUnsubscribeClickEvent = new OnClickListener() {
-		public void onClick(View v) {
-			StringBuilder code = new StringBuilder();
-			code.append(getString(R.string.unsubscribe_message));
-			code.append(" ");
-			for (int i = 0; i < 16; i++) {
-				code.append(ALPHABET.charAt(mRandom.nextInt(ALPHABET.length())));
-			}
+    OnClickListener mButtonWelcomeClickEvent = new OnClickListener() {
+        public void onClick(View v) {
+            messageHandler(mPhone, getString(R.string.welcome_message));
+        }
+    };
 
-			messageHandler(mPhone, code.toString());
-		}
-	};
+    OnClickListener mButtonUnsubscribeClickEvent = new OnClickListener() {
+        public void onClick(View v) {
+            StringBuilder code = new StringBuilder();
+            code.append(getString(R.string.unsubscribe_message));
+            code.append(" ");
+            for (int i = 0; i < 16; i++) {
+                code.append(ALPHABET.charAt(mRandom.nextInt(ALPHABET.length())));
+            }
 
-	OnClickListener mButtonCatFactClickEvent = new OnClickListener() {
-		public void onClick(View v) {
-			messageHandler(mPhone, "Cat Facts: " + mCatFacts[mRandom.nextInt(mCatFacts.length)]);
-		}
-	};
+            messageHandler(mPhone, code.toString());
+        }
+    };
 
-	OnClickListener mButtonNotRecognizedClickEvent = new OnClickListener() {
-		public void onClick(View v) {
-			messageHandler(mPhone, getString(R.string.not_recognized_message));
-		}
-	};
+    OnClickListener mButtonCatFactClickEvent = new OnClickListener() {
+        public void onClick(View v) {
+            messageHandler(mPhone, "Cat Facts: " + mCatFacts[mRandom.nextInt(mCatFacts.length)]);
+        }
+    };
 
-	OnCheckedChangeListener mCheckBoxAutoReplyCheckEvent = new OnCheckedChangeListener() {
-		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-			if (isChecked) {
-				new AsyncTask<Void, Void, Void>() {
-					@Override
-					protected Void doInBackground(Void... params) {
-						CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(mContext);
-						sqlHelper.autoRespond(mPhone);
-						sqlHelper.close();
-						return null;
-					}
-				};
-			}
-		}
-	};
+    OnClickListener mButtonNotRecognizedClickEvent = new OnClickListener() {
+        public void onClick(View v) {
+            messageHandler(mPhone, getString(R.string.not_recognized_message));
+        }
+    };
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.contactactivity);
+    OnCheckedChangeListener mCheckBoxAutoReplyCheckEvent = new OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(mContext);
+                        sqlHelper.autoRespond(mPhone);
+                        sqlHelper.close();
+                        return null;
+                    }
+                };
+            }
+        }
+    };
 
-		mRandom = new Random(Calendar.getInstance().getTimeInMillis());
-		mCatFacts = getResources().getStringArray(R.array.cat_facts_array);
-		mContext = this;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.contactactivity);
 
-		mSmsSender = new SmsSender(this);
+        mRandom = new Random(Calendar.getInstance().getTimeInMillis());
+        mCatFacts = getResources().getStringArray(R.array.cat_facts_array);
+        mContext = this;
 
-		mButtonRemove = (Button) findViewById(R.id.contact_button_remove);
-		mButtonCatFact = (Button) findViewById(R.id.contact_button_catfact);
-		mButtonWelcome = (Button) findViewById(R.id.contact_button_welcome);
-		mButtonUnsubscribe = (Button) findViewById(R.id.contact_button_unsubscribe);
-		mTextViewName = (TextView) findViewById(R.id.contact_textView_name);
-		mTextViewPhone = (TextView) findViewById(R.id.contact_textView_phone);
-		mTextViewExplanation = (TextView) findViewById(R.id.contact_textview_explaination);
-		mCheckBoxViewSMS = (CheckBox) findViewById(R.id.contact_checkBox_viewmms);
-		mButtonNotRecognized = (Button) findViewById(R.id.contact_button_not_recognized);
-		// mCheckBoxAutoRespond = (CheckBox)
-		// findViewById(R.id.contact_auto_respond_checkbox);
+        mSmsSender = new SmsSender(this);
 
-		// reload the state of the checkbox
-		SharedPreferences settings = getSharedPreferences(CatFactsHelper.SHARED_PREFS, 0);
-		mCheckBoxViewSMS.setChecked(settings.getBoolean(SHARED_PREFS_CHECKBOX_VIEWSMS, false));
+        mButtonRemove = (Button) findViewById(R.id.contact_button_remove);
+        mButtonCatFact = (Button) findViewById(R.id.contact_button_catfact);
+        mButtonWelcome = (Button) findViewById(R.id.contact_button_welcome);
+        mButtonUnsubscribe = (Button) findViewById(R.id.contact_button_unsubscribe);
+        mTextViewName = (TextView) findViewById(R.id.contact_textView_name);
+        mTextViewPhone = (TextView) findViewById(R.id.contact_textView_phone);
+        mTextViewExplanation = (TextView) findViewById(R.id.contact_textview_explaination);
+        mCheckBoxViewSMS = (CheckBox) findViewById(R.id.contact_checkBox_viewmms);
+        mButtonNotRecognized = (Button) findViewById(R.id.contact_button_not_recognized);
+        // mCheckBoxAutoRespond = (CheckBox)
+        // findViewById(R.id.contact_auto_respond_checkbox);
 
-		// set explanation text
-		mTextViewExplanation.setText(String.format(getString(R.string.contact_explanation1), getString(R.string.welcome_message)) + String.format(getString(R.string.contact_explanation2), getString(R.string.unsubscribe_message)));
+        // reload the state of the checkbox
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS, 0);
+        mCheckBoxViewSMS.setChecked(settings.getBoolean(SHARED_PREFS_CHECKBOX_VIEWSMS, false));
 
-		// register click events
-		mButtonRemove.setOnClickListener(mButtonRemoveClickEvent);
-		mButtonWelcome.setOnClickListener(mButtonWelcomeClickEvent);
-		mButtonUnsubscribe.setOnClickListener(mButtonUnsubscribeClickEvent);
-		mButtonCatFact.setOnClickListener(mButtonCatFactClickEvent);
-		mButtonNotRecognized.setOnClickListener(mButtonNotRecognizedClickEvent);
+        // set explanation text
+        mTextViewExplanation.setText(String.format(getString(R.string.contact_explanation1),
+                getString(R.string.welcome_message)) + String
+                .format(getString(R.string.contact_explanation2),
+                        getString(R.string.unsubscribe_message)));
 
-		// set check event
-		// mCheckBoxAutoRespond.setOnCheckedChangeListener(mCheckBoxAutoReplyCheckEvent);
+        // register click events
+        mButtonRemove.setOnClickListener(mButtonRemoveClickEvent);
+        mButtonWelcome.setOnClickListener(mButtonWelcomeClickEvent);
+        mButtonUnsubscribe.setOnClickListener(mButtonUnsubscribeClickEvent);
+        mButtonCatFact.setOnClickListener(mButtonCatFactClickEvent);
+        mButtonNotRecognized.setOnClickListener(mButtonNotRecognizedClickEvent);
 
-		// display name and phone number
-		mName = this.getIntent().getExtras().getString("person");
-		CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(this);
-		mPhone = sqlHelper.getPhoneNumber(mName);
-		mTextViewPhone.setText(mPhone);
-		mTextViewName.setText(mName);
-		sqlHelper.close();
+        // set check event
+        // mCheckBoxAutoRespond.setOnCheckedChangeListener(mCheckBoxAutoReplyCheckEvent);
 
-	}
+        // display name and phone number
+        mName = this.getIntent().getExtras().getString("person");
+        CatFactsSQLiteHelper sqlHelper = new CatFactsSQLiteHelper(this);
+        mPhone = sqlHelper.getPhoneNumber(mName);
+        mTextViewPhone.setText(mPhone);
+        mTextViewName.setText(mName);
+        sqlHelper.close();
 
-	@Override
-	public void onDestroy() {
-		SharedPreferences settings = getSharedPreferences(CatFactsHelper.SHARED_PREFS, 0);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(SHARED_PREFS_CHECKBOX_VIEWSMS, mCheckBoxViewSMS.isChecked());
-		editor.commit();
+    }
 
-		super.onDestroy();
-	}
+    @Override
+    public void onDestroy() {
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(SHARED_PREFS_CHECKBOX_VIEWSMS, mCheckBoxViewSMS.isChecked());
+        editor.commit();
 
-	private void messageHandler(String phoneNumber, String message) {
-		try {
-			if (mCheckBoxViewSMS.isChecked()) {
-				mSmsSender.sendSMSwithIntent(mPhone, message);
-			} else {
-				mSmsSender.sendSMS(mPhone, message);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Toast.makeText(this.mContext, "Oh no! Something went wrong", Toast.LENGTH_LONG).show();
-		}
-	}
+        super.onDestroy();
+    }
+
+    private void messageHandler(String phoneNumber, String message) {
+        try {
+            if (mCheckBoxViewSMS.isChecked()) {
+                mSmsSender.sendSMSwithIntent(mPhone, message);
+            } else {
+                mSmsSender.sendSMS(mPhone, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this.mContext, "Oh no! Something went wrong", Toast.LENGTH_LONG).show();
+        }
+    }
 }
